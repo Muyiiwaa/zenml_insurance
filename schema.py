@@ -26,15 +26,15 @@ class ModelRequest(BaseModel):
     """
     age: int = Field(..., description="Age of the client",
                      gt=5, lt=100, examples=[35])
-    sex: Literal['Male','Female'] = Field(..., description="Gender of client",
-                                          examples=["Male","Female"])
+    sex: Literal['male','female'] = Field(..., description="Gender of client",
+                                          examples=["male","female"])
     bmi: float = Field(..., description="bmi of the client",
                      gt=5, lt=100, examples=[35.4])  
     
     children: int = Field(..., description="no children of the client",
                      ge=0, lt=20, examples=[3])
-    smoker: Literal['Yes','No'] = Field(..., description="smoking habit of client",
-                                          examples=["Yes","No"])
+    smoker: Literal['yes','no'] = Field(..., description="smoking habit of client",
+                                          examples=["yes","no"])
     region: Literal['southeast','southwest',
                     'northeast', 'northwest'] = Field(..., description="region of the client",
                                           examples=['southeast','southwest'])

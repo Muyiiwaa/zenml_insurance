@@ -9,6 +9,7 @@ dependencies = [
     "logfire[fastapi]>=3.25.0",
     "pandas>=2.3.1",
     "pyarrow>=21.0.0",
+    "python-dotenv>=1.1.1",
     "scikit-learn>=1.7.1",
     "uvicorn[standard]>=0.35.0",
     "zenml[server]>=0.84.0",

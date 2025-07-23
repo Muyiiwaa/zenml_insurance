@@ -6,6 +6,14 @@ import pandas as pd
 import numpy as np
 from typing import List, Tuple, Dict
 from sklearn.preprocessing import StandardScaler
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+model_id = os.getenv(key="MODEL_ARTIFACT")
+scaler_id = os.getenv(key="SCALER_ARTIFACT")
+encoder_id = os.getenv(key="ENCODER_ARTIFACT")
 
 # configure logging
 logging.basicConfig(level=logging.INFO)
@@ -26,13 +34,13 @@ def get_artifacts() -> Tuple[Dict, StandardScaler, RandomForestRegressor]:
     associated with the prod training pipeline."""
     
     # encoder
-    artifact = Client().get_artifact_version("dcab0e22-c341-4566-9294-9915e64445fb")
+    artifact = Client().get_artifact_version(str(encoder_id))
     label_encoders = artifact.load()
     # scaler
-    artifact = Client().get_artifact_version("dcab0e22-c341-4566-9294-9915e64445fb")
+    artifact = Client().get_artifact_version(str(scaler_id))
     scaler = artifact.load()
     # model
-    artifact = Client().get_artifact_version("dcab0e22-c341-4566-9294-9915e64445fb")
+    artifact = Client().get_artifact_version(str(model_id))
     model = artifact.load()
     
     return label_encoders, scaler, model
@@ -41,7 +49,9 @@ def get_artifacts() -> Tuple[Dict, StandardScaler, RandomForestRegressor]:
 # write a function that makes prediction
 
 def predict_charges(data: Dict) -> float:
-    final_data = pd.DataFrame(data)
+    final_data = {column:[value] for column, value in data.items()}
+    logger.info(f"data: {final_data}")
+    final_data = pd.DataFrame(final_data)
     label_encoders, scaler, model = get_artifacts()
     for column_name in label_encoders.keys():
         final_data[column_name] = label_encoders[column_name].transform(final_data[column_name])
@@ -57,7 +67,13 @@ def predict_charges(data: Dict) -> float:
 
 
 if __name__ == "__main__":
-    pass
+    data = {"age": 35,
+            "sex": "male",
+            "bmi": 35.4,
+            "children": 3,
+            "smoker": "yes",
+            "region": "southeast"}
+    print(predict_charges(data=data))
 
 
 

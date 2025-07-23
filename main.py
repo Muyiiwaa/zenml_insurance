@@ -18,10 +18,10 @@ app = FastAPI(title="Endpoint For Insurance Prediction",
               version= "v1")
 
 logfire.configure(token=logfire_token)
-logfire.instrument_fastapi(app)
+logfire.instrument_fastapi(app=app)
 
 # create the root endpoint
-@app.post(path="/", tags=["Root Endpoints"], response_model=RootResponse)
+@app.get(path="/", tags=["Root Endpoints"], response_model=RootResponse)
 def root():
     """This endpoint serves the root api!"""
     return RootResponse(message="We are live!")
@@ -33,7 +33,7 @@ def get_charges(payload: ModelRequest):
     try:
         data = payload.model_dump()
         charges = predict_charges(data)
-        logfire.info(f"predicted_charges: {charges}")
+        logfire.info(f"predicted_charges: {charges}, payload: {data}")
         
         return ModelResponse(
             predicted_charges=charges
@@ -41,9 +41,9 @@ def get_charges(payload: ModelRequest):
     except Exception as err:
         logfire.error(f"An error occured. Details: {err}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="{err}")
+                            detail=f"{err}")
 
 
 if __name__ == "__main__":
-    uvicorn.run(app=app, host="localhost", port=8000, reload=True)
+    uvicorn.run(app="main:app", host="localhost", port=8000, reload=True)
 
