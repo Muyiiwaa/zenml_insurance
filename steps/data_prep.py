@@ -63,7 +63,9 @@ def split_dataset(data: pd.DataFrame) -> Tuple[
 def scale_dataset(X_train:pd.DataFrame,
                   X_test:pd.DataFrame) -> Tuple[
                       Annotated[Optional[pd.DataFrame], "Scaled X_train"],
-                      Annotated[Optional[pd.DataFrame], "Scaled X_test"]]:
+                      Annotated[Optional[pd.DataFrame], "Scaled X_test"],
+                      Annotated[Optional[StandardScaler], "Scaler Object"]]:
+    scaler = None
     try:
         scaler = StandardScaler()
         scaler.fit(X_train)
@@ -78,6 +80,6 @@ def scale_dataset(X_train:pd.DataFrame,
         X_train_final, X_test_final = None, None
         logger.error(f"An error occured. Detail: {err}")
         
-    return X_train_final, X_test_final
+    return X_train_final, X_test_final, scaler
 
                     

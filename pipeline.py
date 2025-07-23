@@ -10,16 +10,14 @@ logger = get_logger(__name__)
 
 
 # define a pipeline function
-
-@pipeline
-def insurance_pipeline():
+@pipeline(enable_cache=False)
+def insurance_pipeline(enable_cache=False):
     data = load_data()
     data, label_encoders = encode_step(data)
     X_train, X_test, y_train, y_test = split_dataset(data)
-    X_train, X_test = scale_dataset(X_train, X_test)
+    X_train, X_test, scaler = scale_dataset(X_train, X_test)
     model = train_model(X_train, y_train, X_test, y_test)
     
-    return model
 
 if __name__ == "__main__":
     insurance_pipeline()
